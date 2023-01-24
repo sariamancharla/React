@@ -23,6 +23,7 @@ export const useFetch = (url,method="GET") => {
       setIsPending(true)
       
       try {
+        console.log(url)
         const res = await fetch(url, { ...fetchOptions,
                       signal: controller.signal })
         if(!res.ok) {
