@@ -15,9 +15,31 @@ export default function Home() {
   useEffect(()=>{
     setIsPending(true)
 
-    projectFireStore.collection("recipes")
-      .get()
-      .then((snapshot)=>{
+    // projectFireStore.collection("recipes")
+    //   .get()
+    //   .then((snapshot)=>{
+    //     if (snapshot.Empty)
+    //     {
+    //       setError("No recipes")
+    //       setIsPending(false)
+    //     }
+    //     else
+    //     {
+    //        let results=[]
+    //        snapshot.docs.forEach(doc=>{
+    //         //console.log(doc)    
+    //         results.push({id:doc.id,...doc.data()})
+    //        })
+    //        setData(results)
+    //        setIsPending(false)
+    //     }
+    //     //console.log(snapshot)
+    //   }).catch(err=>{
+    //     setError(err.message)
+    //     setIsPending(false)
+    //   })
+    const unsub = projectFireStore.collection("recipes")
+      .onSnapshot((snapshot)=>{
         if (snapshot.Empty)
         {
           setError("No recipes")
@@ -27,18 +49,17 @@ export default function Home() {
         {
            let results=[]
            snapshot.docs.forEach(doc=>{
-            console.log(doc)    
             results.push({id:doc.id,...doc.data()})
            })
            setData(results)
            setIsPending(false)
         }
-        console.log(snapshot)
-      }).catch(err=>{
+      },(err)=>{
         setError(err.message)
         setIsPending(false)
       })
-    
+      //cleanup
+      return()=>unsub()
   },[])
 
   return (
