@@ -2,38 +2,24 @@ import { useState,useEffect } from "react"
 import { projectAuth } from "../firebase/config"
 import { useAuthContext } from "./useAuthContext"
 
-export const useSignup=()=>{
+export const useLogin=()=>{
     const [isCancelled,setIsCancelled]=useState(false)
     const [error,setError]=useState(null)
     const [isPending,setIsPending]=useState(false)
     const {dispatch}=useAuthContext()
 
-    const signup=async(email,password,displayName)=>{
+    const login=async(email,password)=>{
         setError(null)//After rectify error,reset the error to null
         setIsPending(true) //starting signup loading
 
         try{
-            //signup user
-            //reaches to firebase and tries to signup
-            const res=await projectAuth.createUserWithEmailAndPassword(email,password)
-            //console.log(res.user)//user created is displayed
-
-            //user not created
-            if (!res){
-                throw new Error('Could not signup')
-            }
-
-            //add displayName to user
-            //await res.user.updateProfile({displayName:displayName})//takes object
-            await res.user.updateProfile({displayName})//takes object
-
-            //dispatch login action
+            const res=await projectAuth.signInWithEmailAndPassword(email,password)
+            //dispacth logout action
             dispatch({type:'LOGIN',payload:res.user})
-
             if(!isCancelled){
                 setIsPending(false) 
                 setError(null)
-            }   
+            }            
         }
         catch(err){
             if(!isCancelled){
@@ -41,9 +27,10 @@ export const useSignup=()=>{
                 setError(err.message)
                 setIsPending(false) 
             }
-            console.log(err.message)
+            
         }
     }
+
     useEffect(()=>{
 
         //cleanup function
@@ -51,7 +38,5 @@ export const useSignup=()=>{
             setIsCancelled(true)
         )
     },[])
-
-    return {signup,error,isPending}
-
+    return {login,error,isPending}
 }
