@@ -1,5 +1,5 @@
 import { useReducer,useEffect,useState } from "react";
-import {projectFireStore} from '../firebase/config'
+import {projectFireStore,timestamp} from '../firebase/config'
 
 //defined here as we dont want it to created every time
 let initialState={
@@ -58,12 +58,19 @@ export const useFireStore=(collection)=>{
     //add a document
     const addDocument=async (doc)=>{
         dispatch({type:'IS_PENDING'})//starting to load something
-        
+        console.log('inside add document')
         try{
-            const addedDocument=await ref.add(doc)//returns the doc created info
+            console.log('inside try block document')
+            const createdAt=timestamp.fromDate(new Date())
+            console.log(doc)
+            const addedDocument=await ref.add({...doc,createdAt})//returns the doc created info
+            console.log('2')
             dispatchIfNotCancelled({type:'ADDED_DOCUMENT',payload:addedDocument})
+            console.log('3')
         }
         catch(err){
+            console.log('inside try error document')
+            //console.log(err.message)
             dispatchIfNotCancelled({type:'ERROR',payload:err.message})
         }
     }
