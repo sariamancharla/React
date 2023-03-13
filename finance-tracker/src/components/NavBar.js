@@ -10,7 +10,7 @@ export default function NavBar() {
   return (
     <nav className={styles.navbar}>
         <ul>
-            <li className={styles.title}><Link to="/">Home</Link></li>
+            <li className={styles.title}><Link to="/">Finance Tracker</Link></li>
             {!user && 
               (<>
                 <li><Link to="/login">Login</Link></li>
